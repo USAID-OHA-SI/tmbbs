@@ -1,0 +1,60 @@
+---
+title: "DRAFT: Introduction to TMBBS"
+author: Tim Essam, Ph.D. 
+format: pdf
+editor: visual
+---
+
+# A note on modeling
+
+In our day-to-day work in the Office of HIV/AIDS, we focus on answering descriptive and exploratory questions related to our programmatic data. We rarely go beyond these two types of anlaysis due to the inherent limitations of i) working largely with monitoring and evaluation data and ii) working at a high operational tempo. That said, inferential and predictive analysis may be appropriate at certain times -- particularly as PEPFAR moves more and more into the realm of collecting and analyzing patient-level outcomes. When applying the latter types of approaches, mathematical models are the primary tool we employ due to their ability to describe a real world phenomenon or system through equations.
+
+**Inferential models (**$\hat{\beta}$ focus) are designed to understand the relationship between independent and dependent variables. The main goal is to understand the influence of dependent (predictor) variables on an independent (outcome) variable. In our setting, you could imagine fitting a model to understand the determinants of IIT, and trying to assess which determinants have the largest influence on increasing (or decreasing) the likelihood of a client converting to IIT status. These type of models are used for statistical inference or hypothesis testing. They may be used in scientific research and policy analysis (via impact evaluation techniques) where understanding the cause-and-effect relationships is crucial. When estimating inferential models, it is important to have a strong theory and excellent understanding of the data structure to ensure that estimated standard errors are appropriate. Many default inferential models use inappropriate variance-covariance matrices resulting in standard errors that are too small.
+
+**Predicative models (**$\hat{Y}$ focus) are focused on making accurate predictions for new, unseen data. The primary concern is optimizing the model to predict an outcome as accurately as possible. Predictive models are used for forecasting, recommendation systems (think Amazon shopping) and scenarios where future data points are predicted based on historical data. The Spectrum model is an example of a predictive model that is used to predict outcomes such as the number of people living with HIV/AIDS.
+
+Before each session in this series we will describe what type of model we are using and the end goal of the modeling process.
+
+# Machine Learning Terms
+
+## Supervised versus Unsupervised Models
+
+When estimating machine learning models you may encounter supervised and unsupervised types of models. What is the difference between the two?
+
+**Supervised Learning** is a type of machine learning algorithm that learns a function mapping inputs to outputs (**relying on labeled data**). In this paradigm the correct answer is available for each each row in the training dataset. The main goal is to make accurate predictions for new, unseen data based on the trained learning function. An example in OHA would be predicting whether or not a client is IIT. We could use a data set with both IIT and non-IIT outcomes, along with a series of individual characteristics to construct a learning function to predict 0 (non-IIT) or 1 (IIT) outcomes. Because we know the outcomes, we can train and test our model on the observed outcomes. Types of supervised learning algorithms include linear regression, logistical regression, and decision trees (such as random forest),
+
+**Unsupervised Learning** is a type of machine learning algorithm that infers patterns from unlabeled data. Because no target label exists in a unsupervised learning problem, the model focuses on discovering the underlying structure or distribution in a data set without any explicit instructions on what patterns to find -- hence the label unsupervised. Unsupervised learning data does not come with predefined labels or output variables. Types of unsupervised learning algorithms include clustering, association analysis, dimensionality reduction techniques, and anomaly detection.
+
+The Demographic and Health Survey (DHS) wealth index is based off of principal components analysis of household asset data. Wealthier households tend to own more assets of different types than poorer households. To quantify this general pattern, while preserving as much as the variation as possible, PCA is used. In the case of the wealth index, each asset owned by a household is considered a dimension. PCA seeks to find a smaller number of composite indicators that explain most of the variability in the original data. The estimated first principal component is used to rank households from poorest (lower predicted values) to wealthiest (higher predicted values). Details of the wealth index construction can be found [here](https://dhsprogram.com/topics/wealth-index/Wealth-Index-Construction.cfm).
+
+## Bias-variance trade-off
+
+When fitting predictive models there is a trade-off between the two main sources of errors: variance and bias. Variance is the amount by which a prediction (yhat) would change if we estimated it using different training data (James et al., 2013). If a model is too complex and is simply capturing noise in a training data as it were a real pattern (overfitting) we may experience high variance. Bias, on the other hand, is the error that is introduced by trying to approximate a real world process with a simpler model - the amount by which the average of our estimate differs from the true mean (Hastie et al, 2009). 
+
+Models that are too simple, may have more bias (or underfitting). However, as the complexity of a model increases so does the variance and risk of overfitting.
+
+There are a number of strategies we can use to strike a balance between bias and variance. Which strategy you use depends on numerous factors such as the characteristics of your data, the type of algorithm you are using and the type of prediction you ultimately wish to make. We briefly introduce each method below. In practice, many of the methods may be used together to improve the performance of a model.
+
+**Regularization** - Attempts to reduce the complexity of a model by adding a penalty term to the loss function that a model optimizes. Ridge, lasso, and Elastic Net are all examples of regularization approaches. While regularization approaches may reduce the variance by penalizing large coefficients, they may also increase bias by constraining the flexibility of a model
+
+**Resampling** - uses sampling methods to repeatedly draw samples from the training data to fit numerous models on different cuts of the data. Cross-validation is a type of resampling method that involves dividing the dataset into multiple subsets, training a model on a set of the subsets, and validating the trained model subsets withheld. The benefit to this approach is that assists in selecting a model complexity that balances the trade-off between bias and variance by providing reliable estimates of the model's performance on unseen data.
+
+**Ensemble Methods** - these methods combine multiple models to make a final prediction. Bagging and boosting can reduce variance and bias, respectively. Bagging involves selecting a random sample of data in a training data set and estimating a series of weak models. Boosting, on the other hand, trains a series of models sequentially, with each iteration focused on correcting the errors of the lagged model. Gradient boosting machines are widely used boosting algorithms.
+
+Pruning - involves cutting back branches (nodes) of a decision tree to prevent the model from becoming too complex and overfitting the training data. After a tree is fully grown, pruning is used to reduce the variance by simplifying the number of branches (or complexity of the model).
+
+**Dimensionality reduction** - methods such as Principal Components Analysis (PCA) reduce the number of input variables by creating a composite index that capture the most significant variance in the data. Dimensionality reduction techniques can be useful when a dataset is wider than longer (more columns than observations) or when and number of columns can be combined to form a proxy composite of a desired metric (such as the DHS wealth index).
+
+**Model Selection Criteria**: techniques like the Akaike Information Criterion (AIC) and the Bayesian Information Criterion (BIC) quantify goodness of fit and model complexity. These metrics can be used to compare a number of models
+
+**Hyperparameter Tuning**: involves training a model sequentially with a different set of hyperparameters to determine an optimal model. The number or branches allowed in a decision tree is a type of hyperparameter we can modify through tuning.
+
+# Resources
+
+Boehmke, B., & Greenwell, B. (2019). [*Hands-On Machine Learning with R*](https://bradleyboehmke.github.io/HOML/index.html). Chapman and Hall/CRC.
+
+Hastie, T., Tibshirani, R., & Friedman, J. (2009). [*The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.)](https://hastie.su.domains/Papers/ESLII.pdf). Springer.
+
+James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). [*An Introduction to Statistical Learning: with Applications in R*](https://www.stat.berkeley.edu/~rabbee/s154/ISLR_First_Printing.pdf). Springer.
+
+Kuhn, M., & Silge, J. (2023). [Tidy Modeling with R](https://www.tmwr.org/).
